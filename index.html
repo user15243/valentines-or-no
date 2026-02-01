@@ -25,11 +25,10 @@
             z-index: 1;
         }
         .buttons {
-            display: flex;
-            justify-content: space-between;
             width: 300px;
             margin-top: 20px;
             position: relative;
+            height: 60px;
         }
         .button {
             background: pink;
@@ -38,14 +37,16 @@
             font-size: 18px;
             cursor: pointer;
             border-radius: 10px;
-            position: absolute;
-            transition: transform 0.3s;
+            position: fixed;
+            transition: left 0.25s ease, top 0.25s ease;
         }
         #yes {
-            left: 0;
+            left: calc(50% - 140px);
+            top: calc(50% + 40px);
         }
         #no {
-            right: 0;
+            left: calc(50% + 40px);
+            top: calc(50% + 40px);
         }
         .heart {
             position: absolute;
@@ -54,6 +55,7 @@
             background: rgba(255, 105, 180, 0.6);
             clip-path: path("M 20,40 A 20,20 0 0,1 60,40 A 20,20 0 0,1 100,40 Q 100,80 60,120 Q 20,80 20,40 Z");
             animation: float linear infinite;
+            pointer-events: none;
         }
         @keyframes float {
             0% {
@@ -70,31 +72,41 @@
 <body>
     <div class="container" id="mainContainer">
         <h1>will u be my valentine? :p</h1>
-        <div class="buttons">
-            <button id="yes" class="button" onclick="yesClicked()">yes</button>
-            <button id="no" class="button" onclick="moveNo()">no</button>
-        </div>
+        <div class="buttons"></div>
     </div>
+
+    <button id="yes" class="button" onclick="yesClicked()">yes</button>
+    <button id="no" class="button" onmouseenter="moveNo()">no</button>
 
     <script>
         function moveNo() {
-            let noButton = document.getElementById("no");
-            let maxX = window.innerWidth * 0.4;
-            let maxY = window.innerHeight * 0.4;
-            let newX = (Math.random() - 0.5) * maxX;
-            let newY = (Math.random() - 0.5) * maxY;
-            noButton.style.transform = `translate(${newX}px, ${newY}px)`;
+            const noButton = document.getElementById("no");
+            const padding = 20;
+
+            const maxX = window.innerWidth - noButton.offsetWidth - padding;
+            const maxY = window.innerHeight - noButton.offsetHeight - padding;
+
+            const newX = Math.random() * maxX;
+            const newY = Math.random() * maxY;
+
+            noButton.style.left = newX + "px";
+            noButton.style.top = newY + "px";
         }
+
         function yesClicked() {
-            document.getElementById("mainContainer").innerHTML = "<h1 style='font-size: 50px; color: #ff69b4; text-align: center;'>YAYYYY :D </h1>";
+            document.getElementById("mainContainer").innerHTML =
+                "<h1 style='font-size:50px;color:#ff69b4;'>YAYYYY :D</h1>";
         }
+
         function createHeart() {
             let heart = document.createElement("div");
             heart.className = "heart";
+
             let startX = Math.random() * window.innerWidth;
             let startY = window.innerHeight + 50;
             let driftX = (Math.random() - 0.5) * 300;
             let driftY = -window.innerHeight - Math.random() * 200;
+
             heart.style.left = startX + "px";
             heart.style.top = startY + "px";
             heart.style.setProperty("--start-x", "0px");
@@ -102,9 +114,11 @@
             heart.style.setProperty("--end-x", driftX + "px");
             heart.style.setProperty("--end-y", driftY + "px");
             heart.style.animationDuration = Math.random() * 4 + 6 + "s";
+
             document.body.appendChild(heart);
             setTimeout(() => heart.remove(), 10000);
         }
+
         setInterval(createHeart, 1000);
     </script>
 </body>
